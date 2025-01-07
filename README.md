@@ -50,6 +50,7 @@ optimizer = MARS(model.parameters(), lr=args.lr, weight_decay = args.weight_deca
 
 ### Parameters Meaning:
 
+```
 1. nproc_per_node: <The number of GPUs you want to use on each node (machine/server)>
 2. CUDA_VISIBLE_DEVICES: <Specify the index of the GPU corresponding to a single node (machine/server) (starting from 0)>
 3. nnodes: <number of nodes (machine/server)>
