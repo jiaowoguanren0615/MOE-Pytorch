@@ -1,7 +1,7 @@
 <h1 align='center'>VisionTransFormer-MoE</h1>
 
 ## This project is implemented in PyTorch, can be used to train your image-datasets for vision tasks.  
-## [Deepspeekv3 MoE source code](https://github.com/deepseek-ai/deepseek-v3)  
+## [DeepSeekv3 MoE source code](https://github.com/deepseek-ai/deepseek-v3)  
 ![image](https://github.com/jiaowoguanren0615/MOE-Pytorch/blob/main/sample_png/1.jpg)  
 ![image](https://github.com/jiaowoguanren0615/MOE-Pytorch/blob/main/sample_png/2.jpg)  
 
