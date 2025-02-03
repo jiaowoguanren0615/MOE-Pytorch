@@ -1,6 +1,6 @@
 import math
 from dataclasses import dataclass
-from typing import Tuple, Optional, Literal
+from typing import Tuple, Optional, Literal, List
 
 import torch
 from torch import nn
@@ -8,6 +8,7 @@ import torch.nn.functional as F
 import torch.distributed as dist
 
 from models.moe_kernel import act_quant, weight_dequant, fp8_gemm, PatchEmbedding
+from models.scsa import SCSA
 
 from timm.models import register_model
 
@@ -43,6 +44,13 @@ class ModelArgs:
     n_limited_groups: int = 1
     score_func: Literal["softmax", "sigmoid"] = "softmax"
     route_scale: float = 1.
+    #scsa
+    attn_drop_ratio: float = 0.1,
+    down_sample_mode: str = 'avg_pool',
+    gate_layer: str = 'sigmoid',
+    group_kernel_sizes: List = [3, 5, 7, 9],
+    head_num: int = 1,
+    window_size: int = 7
     # mla
     q_lora_rank: int = 0
     kv_lora_rank: int = 16
@@ -373,8 +381,10 @@ class Block(nn.Module):
         self.ffn_norm = RMSNorm(args.dim)
 
     def forward(self, x: torch.Tensor, start_pos: int, freqs_cis: torch.Tensor, mask: Optional[torch.Tensor]) -> torch.Tensor:
+
         x = x + self.attn(self.attn_norm(x), start_pos, freqs_cis, mask)
         x = x + self.ffn(self.ffn_norm(x))
+
         return x
 
 
@@ -507,15 +517,15 @@ def vit_moe_large(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=
     return model
 
 # if __name__ == "__main__":
-#     from torchinfo import summary
-#     # torch.set_default_dtype(torch.float)
-#     torch.set_default_device("cuda")
-#     torch.manual_seed(0)
-#     # args = ModelArgs()
+# #     from torchinfo import summary
+# #     # torch.set_default_dtype(torch.float)
+# #     torch.set_default_device("cuda")
+# #     torch.manual_seed(0)
+#     args = ModelArgs()
 #     # x = torch.randint(0, args.vocab_size, (2, 197, 768))
-#     # print(x.size())
+# #     # print(x.size())
 #     model = vit_moe_base(num_classes=5)
-#     # print(model(x).size())
+# #     # print(model(x).size())
 #     x = torch.randn(2, 3, 224, 224)
 #     y = model.forward_features(x)
 #     for i in y:
