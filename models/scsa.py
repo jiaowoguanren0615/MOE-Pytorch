@@ -74,6 +74,7 @@ class SCSA(nn.Module):
         The dim of x is (B, C, H, W)
         """
         # Spatial attention priority calculation
+
         b, c, h_, w_ = x.size()
         # (B, C, H)
         x_h = x.mean(dim=3)
@@ -132,9 +133,9 @@ class SCSA(nn.Module):
         return attn * x
 
 
-# if __name__ == '__main__':
-#     x = torch.randn(1, 32, 112, 112)
-#     net = SCSA(dim=32, head_num=1, window_size=7, attn_drop_ratio=0.1)
-#     y = net(x)
-#     print(y.shape)
-#     print(sum(p.numel() for p in net.parameters()))
+if __name__ == '__main__':
+    x = torch.randn(2, 32, 112, 112)
+    net = SCSA(dim=32, head_num=1, window_size=7, attn_drop_ratio=0.1)
+    y = net(x)
+    print(y.shape)
+    print(sum(p.numel() for p in net.parameters()))

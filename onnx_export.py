@@ -24,9 +24,13 @@ parser.add_argument('--output', metavar='ONNX_FILE', default=None, type=str,
 
 # Model & datasets params
 parser.add_argument('--model', default='vit_moe_base', type=str, metavar='MODEL',
-                        choices=['vit_moe_samll', 'vit_moe_base', 'vit_moe_large'],
+                    choices=['vit_moe_samll', 'vit_moe_base', 'vit_moe_large', 'swinv2_tiny_patch4_window8_256',
+                             'swinv2_tiny_patch4_window16_256', 'swinv2_small_patch4_window8_256',
+                             'swinv2_small_patch4_window16_256', 'swinv2_base_patch4_window16_256',
+                             'swinv2_base_patch4_window8_256', 'swinv2_base_patch4_window16_256_in22k',
+                             'swinv2_base_patch4_window24_384_in22k', 'swinv2_large_patch4_window24_384_in22k',
+                             'swinv2_large_patch4_window16_224_in22k'],
                         help='Name of model to train')
-parser.add_argument('--extra_attention_block', default=False, type=bool, help='Add an extra attention block')
 parser.add_argument('--checkpoint', default='./output/vit_moe_base_best_checkpoint.pth', type=str, metavar='PATH',
                     help='path to checkpoint (default: none)')
 parser.add_argument('--batch-size', default=1, type=int,
@@ -200,7 +204,6 @@ def main():
     model = create_model(
         args.model,
         num_classes=args.nb_classes,
-        extra_attention_block=args.extra_attention_block,
         exportable=True
     )
 

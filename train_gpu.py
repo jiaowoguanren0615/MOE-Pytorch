@@ -55,7 +55,7 @@ torch.set_default_dtype(torch.float32)
 
 def get_args_parser():
     parser = argparse.ArgumentParser(
-        'MobileNetV4 training and evaluation script', add_help=False)
+        'MoE-Vision training and evaluation script', add_help=False)
     parser.add_argument('--batch-size', default=8, type=int)
     parser.add_argument('--epochs', default=5, type=int)
     parser.add_argument('--predict', default=True, type=bool, help='plot ROC curve and confusion matrix')
@@ -63,9 +63,15 @@ def get_args_parser():
 
     # Model parameters
     parser.add_argument('--model', default='vit_moe_base', type=str, metavar='MODEL',
-                        choices=['vit_moe_samll', 'vit_moe_base', 'vit_moe_large'],
+                        choices=['vit_moe_samll', 'vit_moe_base', 'vit_moe_large', 'swinv2_tiny_patch4_window8_256',
+                                 'swinv2_tiny_patch4_window16_256', 'swinv2_small_patch4_window8_256',
+                                 'swinv2_small_patch4_window16_256', 'swinv2_base_patch4_window16_256',
+                                 'swinv2_base_patch4_window8_256', 'swinv2_base_patch4_window16_256_in22k',
+                                 'swinv2_base_patch4_window24_384_in22k', 'swinv2_large_patch4_window24_384_in22k',
+                                 'swinv2_large_patch4_window16_224_in22k'],
                         help='Name of model to train')
-    parser.add_argument('--input-size', default=224, type=int, help='images input size')
+    parser.add_argument('--input-size', default=224, type=int, choices=[224, 256, 384],
+                        help='images input size, please refer the origin paper')
     parser.add_argument('--model-ema', action='store_true')
     parser.add_argument('--no-model-ema', action='store_false', dest='model_ema')
     parser.set_defaults(model_ema=True)
@@ -311,7 +317,7 @@ def main(args):
         # new_state_dict = utils.map_safetensors(checkpoint_model, state_dict)
 
         for k in list(checkpoint_model.keys()):
-            if 'classifier' in k:
+            if 'head' in k:
                 print(f"Removing key {k} from pretrained checkpoint")
                 del checkpoint_model[k]
 
@@ -320,12 +326,11 @@ def main(args):
 
         if args.freeze_layers:
             for name, para in model.named_parameters():
-                if 'classifier' not in name:
+                if 'head' not in name:
                     para.requires_grad_(False)
-                # else:
-                #     print('training {}'.format(name))
-            if args.extra_attention_block:
-                for name, para in model.extra_attention_block.named_parameters():
+
+                # Training MoE modules
+                if 'experts' in name:
                     para.requires_grad_(True)
 
     model.to(device)
@@ -516,7 +521,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        'MobileNetV4 training and evaluation script', parents=[get_args_parser()])
+        'MoE-Vision training and evaluation script', parents=[get_args_parser()])
     args = parser.parse_args()
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)

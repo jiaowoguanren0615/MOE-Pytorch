@@ -17,7 +17,12 @@ import onnxoptimizer as optimizer
 parser = argparse.ArgumentParser(description="Optimize ONNX model")
 
 parser.add_argument('--model', default='vit_moe_base', type=str, metavar='MODEL',
-                        choices=['vit_moe_samll', 'vit_moe_base', 'vit_moe_large'],
+                    choices=['vit_moe_samll', 'vit_moe_base', 'vit_moe_large', 'swinv2_tiny_patch4_window8_256',
+                             'swinv2_tiny_patch4_window16_256', 'swinv2_small_patch4_window8_256',
+                             'swinv2_small_patch4_window16_256', 'swinv2_base_patch4_window16_256',
+                             'swinv2_base_patch4_window8_256', 'swinv2_base_patch4_window16_256_in22k',
+                             'swinv2_base_patch4_window24_384_in22k', 'swinv2_large_patch4_window24_384_in22k',
+                             'swinv2_large_patch4_window16_224_in22k'],
                         help='Name of model to train')
 parser.add_argument("--output", default=None, help="The optimized model output filename")
 
