@@ -5,6 +5,7 @@ import torch
 import torch.nn.functional as F
 from timm.models.layers import trunc_normal_, to_2tuple, DropPath
 from models.moe import MoE, ModelArgs
+from timm.models import register_model
 
 
 class Mlp(nn.Module):
@@ -661,7 +662,8 @@ class SwinTransformerV2(nn.Module):
         return flops
 
 
-def swinv2_tiny_patch4_window8_256(num_classes: int = 1000, **kwargs):
+@register_model
+def swinv2_tiny_patch4_window8_256(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 1000, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=8,
@@ -674,7 +676,8 @@ def swinv2_tiny_patch4_window8_256(num_classes: int = 1000, **kwargs):
     return model
 
 
-def swinv2_tiny_patch4_window16_256(num_classes: int = 1000, **kwargs):
+@register_model
+def swinv2_tiny_patch4_window16_256(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 1000, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=16,
@@ -687,7 +690,8 @@ def swinv2_tiny_patch4_window16_256(num_classes: int = 1000, **kwargs):
     return model
 
 
-def swinv2_small_patch4_window8_256(num_classes: int = 1000, **kwargs):
+@register_model
+def swinv2_small_patch4_window8_256(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 1000, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=8,
@@ -700,7 +704,8 @@ def swinv2_small_patch4_window8_256(num_classes: int = 1000, **kwargs):
     return model
 
 
-def swinv2_small_patch4_window16_256(num_classes: int = 1000, **kwargs):
+@register_model
+def swinv2_small_patch4_window16_256(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 1000, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=16,
@@ -713,7 +718,8 @@ def swinv2_small_patch4_window16_256(num_classes: int = 1000, **kwargs):
     return model
 
 
-def swinv2_base_patch4_window8_256(num_classes: int = 1000, **kwargs):
+@register_model
+def swinv2_base_patch4_window8_256(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 1000, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=8,
@@ -726,7 +732,8 @@ def swinv2_base_patch4_window8_256(num_classes: int = 1000, **kwargs):
     return model
 
 
-def swinv2_base_patch4_window16_256(num_classes: int = 21841, **kwargs):
+@register_model
+def swinv2_base_patch4_window16_256(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 21841, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=16,
@@ -739,7 +746,8 @@ def swinv2_base_patch4_window16_256(num_classes: int = 21841, **kwargs):
     return model
 
 
-def swinv2_base_patch4_window16_256_in22k(num_classes: int = 21841, **kwargs):
+@register_model
+def swinv2_base_patch4_window16_256_in22k(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 21841, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=16,
@@ -752,7 +760,8 @@ def swinv2_base_patch4_window16_256_in22k(num_classes: int = 21841, **kwargs):
     return model
 
 
-def swinv2_base_patch4_window24_384_in22k(num_classes: int = 21841, **kwargs):
+@register_model
+def swinv2_base_patch4_window24_384_in22k(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 21841, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=24,
@@ -766,7 +775,8 @@ def swinv2_base_patch4_window24_384_in22k(num_classes: int = 21841, **kwargs):
     return model
 
 
-def swinv2_large_patch4_window16_224_in22k(num_classes: int = 21841, **kwargs):
+@register_model
+def swinv2_large_patch4_window16_224_in22k(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 21841, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=16,
@@ -779,7 +789,8 @@ def swinv2_large_patch4_window16_224_in22k(num_classes: int = 21841, **kwargs):
     return model
 
 
-def swinv2_large_patch4_window24_384_in22k(num_classes: int = 21841, **kwargs):
+@register_model
+def swinv2_large_patch4_window24_384_in22k(pretrained=False, pretrained_cfg=None, pretrained_cfg_overlay=None, num_classes: int = 21841, **kwargs):
     model = SwinTransformerV2(in_chans=3,
                               patch_size=4,
                               window_size=24,
@@ -793,13 +804,12 @@ def swinv2_large_patch4_window24_384_in22k(num_classes: int = 21841, **kwargs):
     return model
 
 
-if __name__ == '__main__':
-    net = swinv2_tiny_patch4_window8_256().cuda()
-    # x = torch.randn(1, 3, 256, 256).cuda()
-    # y = net(x)
-    for name, para in net.named_parameters():
-        print(name)
+# if __name__ == '__main__':
+#     net = swinv2_tiny_patch4_window8_256().cuda()
+#     # x = torch.randn(1, 3, 256, 256).cuda()
+#     # y = net(x)
+#     for name, para in net.named_parameters():
+#         print(name)
     # print(y.shape)
     # for i in y:
     #     print(i.shape)
-    # print([int(96 * 2 ** (i)) for i in range(4)])  # [96, 192, 384, 768]
