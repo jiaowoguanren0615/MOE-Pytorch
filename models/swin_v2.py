@@ -239,6 +239,7 @@ class SwinTransformerBlock(nn.Module):
         self.moe_args = ModelArgs()
         self.moe_args.dim = self.dim
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop) if layer_id < self.moe_args.n_dense_layers else MoE(self.moe_args)
+        # self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
 
 

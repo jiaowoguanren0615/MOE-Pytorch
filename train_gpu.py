@@ -70,11 +70,11 @@ def get_args_parser():
                                  'swinv2_base_patch4_window24_384_in22k', 'swinv2_large_patch4_window24_384_in22k',
                                  'swinv2_large_patch4_window16_224_in22k'],
                         help='Name of model to train')
-    parser.add_argument('--input-size', default=224, type=int, choices=[224, 256, 384],
+    parser.add_argument('--input-size', default=256, type=int, choices=[224, 256, 384],
                         help='images input size, please refer the origin paper')
     parser.add_argument('--model-ema', action='store_true')
     parser.add_argument('--no-model-ema', action='store_false', dest='model_ema')
-    parser.set_defaults(model_ema=True)
+    # parser.set_defaults(model_ema=True)
     parser.add_argument('--model-ema-decay', type=float, default=0.99996, help='')
     parser.add_argument('--model-ema-force-cpu', action='store_true', default=False, help='')
 
@@ -302,7 +302,9 @@ def main(args):
     print(f"Creating model: {args.model}")
 
     model = create_model(
-            args.model
+            args.model,
+            num_classes=args.nb_classes,
+            args=args
         )
 
     if args.finetune:
@@ -313,8 +315,6 @@ def main(args):
             checkpoint = utils.load_model(args.finetune, model)
 
         checkpoint_model = checkpoint
-        # state_dict = model.state_dict()
-        # new_state_dict = utils.map_safetensors(checkpoint_model, state_dict)
 
         for k in list(checkpoint_model.keys()):
             if 'head' in k:
@@ -361,8 +361,8 @@ def main(args):
     # print('*****************')
 
     # optimizer = create_optimizer(args, model_without_ddp)
-    # optimizer = torch.optim.AdamW(model_without_ddp.parameters(), lr=2e-4, weight_decay=args.weight_decay) if args.finetune else create_optimizer(args, model_without_ddp)
-    optimizer = MARS(model_without_ddp.parameters(), lr=args.lr, weight_decay=args.weight_decay, lr_1d=args.adamw_lr)
+    optimizer = torch.optim.AdamW(model_without_ddp.parameters(), lr=1e-3, weight_decay=args.weight_decay) if args.finetune else create_optimizer(args, model_without_ddp)
+    # optimizer = MARS(model_without_ddp.parameters(), lr=args.lr, weight_decay=args.weight_decay, lr_1d=args.adamw_lr)
 
     loss_scaler = NativeScaler()
     lr_scheduler, _ = create_scheduler(args, optimizer)
@@ -508,7 +508,9 @@ def main(args):
     # plot ROC curve and confusion matrix
     if args.predict and utils.is_main_process():
         model_predict = create_model(
-            args.model
+            args.model,
+            num_classes=args.nb_classes,
+            args=args
         )
         model_predict.to(device)
         print('*******************STARTING PREDICT*******************')

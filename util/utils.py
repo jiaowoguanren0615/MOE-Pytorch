@@ -278,7 +278,7 @@ def load_model(modelpath, model: nn.Module):
     if 'safetensors' in modelpath:
         checkpoint = safetensors.torch.load_file(modelpath)
     else:
-        checkpoint = torch.load(modelpath, map_location='cpu')
+        checkpoint = torch.load(modelpath, map_location='cpu')['model']
     return checkpoint
 
 
